@@ -27,16 +27,21 @@ class ReadingCommandSpec extends UnitSpec {
       output should contain only aMessageFromAlice
     }
 
-    "not return messages from people not followed by the user" in {
+    "return only messages posted by the user" in {
 
       val bob = User("Bob")
       val aMessageFromBob = Message(bob, "what's up?")
-      val socialNetworkWithAMessageFromBob = SocialNetwork.create.copy(messages = List(aMessageFromBob))
+
+      val aMessageFromAlice = Message(alice, "hello world")
+      val anotherMessageFromAlice = Message(alice, "it's me again")
+
+      val socialNetworkWithAMessageFromBob = SocialNetwork.create.copy(
+        messages = List(aMessageFromBob, aMessageFromAlice, anotherMessageFromAlice))
 
       val command = Reading(alice, socialNetworkWithAMessageFromBob)
       val (_, output) = command.execute()
 
-      output shouldBe 'empty
+      output should contain only (aMessageFromAlice, anotherMessageFromAlice)
     }
   }
 
