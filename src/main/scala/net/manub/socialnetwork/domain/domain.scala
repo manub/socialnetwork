@@ -1,6 +1,6 @@
 package net.manub.socialnetwork.domain
 
-import java.time.LocalDateTime
+import org.joda.time.LocalDateTime
 
 case class User(username: String)
 
