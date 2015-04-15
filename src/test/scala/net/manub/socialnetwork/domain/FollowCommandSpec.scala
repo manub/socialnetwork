@@ -2,7 +2,7 @@ package net.manub.socialnetwork.domain
 
 import net.manub.socialnetwork.{SocialNetwork, UnitSpec}
 
-class FollowingCommandSpec extends UnitSpec {
+class FollowCommandSpec extends UnitSpec {
 
   "a following command" should {
 
@@ -14,8 +14,8 @@ class FollowingCommandSpec extends UnitSpec {
 
       val aSocialNetworkWithAMessageFromAlice = SocialNetwork.create.copy(messages = List(aMessageFromAlice))
 
-      val command = Following(bob, alice, aSocialNetworkWithAMessageFromAlice)
-      val (socialNetwork, _) = command.execute()
+      val command = new Follow(bob, alice)
+      val (socialNetwork, _) = command(aSocialNetworkWithAMessageFromAlice)
 
       socialNetwork.followedBy(bob) should contain only alice
     }

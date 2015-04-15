@@ -1,8 +1,8 @@
 package net.manub.socialnetwork.domain
 
-import net.manub.socialnetwork.{UnitSpec, SocialNetwork}
+import net.manub.socialnetwork.{SocialNetwork, UnitSpec}
 
-class ReadingCommandSpec extends UnitSpec {
+class ReadCommandSpec extends UnitSpec {
 
   "a reading command" should {
 
@@ -10,8 +10,8 @@ class ReadingCommandSpec extends UnitSpec {
 
     "not return any message when no messages have been posted" in {
 
-      val command = Reading(alice, SocialNetwork.create)
-      val (_, output) = command.execute()
+      val command = new Read(alice)
+      val (_, output) = command(SocialNetwork.create)
 
       output shouldBe 'empty
     }
@@ -21,8 +21,8 @@ class ReadingCommandSpec extends UnitSpec {
       val aMessageFromAlice = Message(alice, "hello world")
       val socialNetworkWithAMessageFromAlice = SocialNetwork.create.copy(messages = List(aMessageFromAlice))
 
-      val command = Reading(alice, socialNetworkWithAMessageFromAlice)
-      val (_, output) = command.execute()
+      val command = new Read(alice)
+      val (_, output) = command(socialNetworkWithAMessageFromAlice)
 
       output should contain only aMessageFromAlice
     }
@@ -38,8 +38,8 @@ class ReadingCommandSpec extends UnitSpec {
       val socialNetworkWithAMessageFromBob = SocialNetwork.create.copy(
         messages = List(aMessageFromBob, aMessageFromAlice, anotherMessageFromAlice))
 
-      val command = Reading(alice, socialNetworkWithAMessageFromBob)
-      val (_, output) = command.execute()
+      val command = new Read(alice)
+      val (_, output) = command(socialNetworkWithAMessageFromBob)
 
       output should contain only (aMessageFromAlice, anotherMessageFromAlice)
     }

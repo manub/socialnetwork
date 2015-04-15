@@ -2,7 +2,6 @@ package net.manub.socialnetwork.domain
 
 import net.manub.socialnetwork.{SocialNetwork, UnitSpec}
 import org.joda.time.DateTimeUtils
-import org.scalatest.BeforeAndAfter
 
 class WallCommandSpec extends UnitSpec {
 
@@ -16,18 +15,18 @@ class WallCommandSpec extends UnitSpec {
 
     "return no messages when the user hasn't posted any messages and doesn't follow anybody" in {
 
-      val command = Wall(alice, SocialNetwork.create)
+      val command = new Wall(alice)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create)
       output shouldBe 'empty
     }
 
     "return the messages posted by the user" in {
 
       val aMessageFromAlice = Message(alice, "hello world")
-      val command = Wall(alice, SocialNetwork.create.copy(messages = List(aMessageFromAlice)))
+      val command = new Wall(alice)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create.copy(messages = List(aMessageFromAlice)))
       output should contain only aMessageFromAlice
     }
 
@@ -35,9 +34,9 @@ class WallCommandSpec extends UnitSpec {
 
       val bob = User("Bob")
       val aMessageFromBob = Message(bob, "yo what's up")
-      val command = Wall(alice, SocialNetwork.create.copy(messages = List(aMessageFromBob)))
+      val command = new Wall(alice)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create.copy(messages = List(aMessageFromBob)))
       output shouldBe 'empty
     }
 
@@ -45,9 +44,9 @@ class WallCommandSpec extends UnitSpec {
 
       val charlie = User("Charlie")
       val aMessageFromCharlie = Message(charlie, "hi there")
-      val command = Wall(alice, SocialNetwork.create.copy(messages = List(aMessageFromCharlie), followers = Map(alice -> List(charlie))))
+      val command = new Wall(alice)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create.copy(messages = List(aMessageFromCharlie), followers = Map(alice -> List(charlie))))
       output should contain only aMessageFromCharlie
     }
 
@@ -60,9 +59,9 @@ class WallCommandSpec extends UnitSpec {
       DateTimeUtils.setCurrentMillisFixed(2000)
       val aMessageFromCharlie = Message(charlie, "hi there")
 
-      val command = Wall(alice, SocialNetwork.create.copy(messages = List(aMessageFromAlice, aMessageFromCharlie), followers = Map(alice -> List(charlie))))
+      val command = new Wall(alice)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create.copy(messages = List(aMessageFromAlice, aMessageFromCharlie), followers = Map(alice -> List(charlie))))
       output should contain theSameElementsInOrderAs List(aMessageFromCharlie, aMessageFromAlice)
 
     }

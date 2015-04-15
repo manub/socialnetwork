@@ -1,9 +1,8 @@
 package net.manub.socialnetwork.domain
 
-import net.manub.socialnetwork.{UnitSpec, SocialNetwork}
-import org.scalatest.{ShouldMatchers, WordSpec}
+import net.manub.socialnetwork.{SocialNetwork, UnitSpec}
 
-class PostingCommandSpec extends UnitSpec {
+class PostCommandSpec extends UnitSpec {
 
   val user = User("Alice")
   val message = Message(user, "hello world")
@@ -11,9 +10,9 @@ class PostingCommandSpec extends UnitSpec {
   "a posting command" should {
 
     "write a message in the social network" in {
-      val command = Posting(message, SocialNetwork.create)
+      val command = new Post(message)
 
-      val (socialNetWork, _) = command.execute()
+      val (socialNetWork, _) = command(SocialNetwork.create)
 
       socialNetWork.messages should contain only message
     }
@@ -22,9 +21,9 @@ class PostingCommandSpec extends UnitSpec {
       val user = User("Alice")
       val message = Message(user, "hello world")
 
-      val command = Posting(message, SocialNetwork.create)
+      val command = new Post(message)
 
-      val (_, output) = command.execute()
+      val (_, output) = command(SocialNetwork.create)
 
       output shouldBe 'empty
     }
@@ -34,9 +33,9 @@ class PostingCommandSpec extends UnitSpec {
       val message = Message(user, "hello world")
       val anotherMessage = Message(user, "hello again")
 
-      val command = Posting(anotherMessage, SocialNetwork.create.copy(messages = List(message)))
+      val command = new Post(anotherMessage)
 
-      val (socialNetWork, _) = command.execute()
+      val (socialNetWork, _) = command(SocialNetwork.create.copy(messages = List(message)))
 
       socialNetWork.messages should contain theSameElementsAs List(message, anotherMessage)
     }

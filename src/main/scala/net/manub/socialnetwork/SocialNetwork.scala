@@ -6,7 +6,7 @@ import org.joda.time.LocalDateTime
 case class SocialNetwork private(messages: List[Message] = List.empty,
                                  followers: Map[User, List[User]] = Map.empty) {
 
-  implicit def dateTimeDescOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan(_ isAfter _)
+  implicit def dateTimeDesc: Ordering[LocalDateTime] = Ordering.fromLessThan(_ isAfter _)
 
   def write(message: Message): SocialNetwork =
     copy(messages = messages :+ message)
